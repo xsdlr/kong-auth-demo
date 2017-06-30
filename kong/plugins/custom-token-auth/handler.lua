@@ -51,8 +51,12 @@ local function validate_token (headers, conf)
     resp = table.concat(response_body)
   end
   ngx.log(ngx.DEBUG, "response body: ", resp)
-
-  return false, code, response_headers, resp
+  local decoded, err = cjson.decode(resp)
+  if err then
+    ngx.log(ngx.ERR, "failed to decode response body: ", err)
+    return false, code, response_headers, {}
+  end
+  return false, code, response_headers, decoded
 end
 
 function TokenAuthHandler:new()
