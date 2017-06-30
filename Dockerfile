@@ -3,7 +3,7 @@ MAINTAINER Habor Huang, haborhuang@whispir.cc
 
 ENV KONG_DATABASE postgres
 ENV KONG_LUA_PACKAGE_PATH /kong-plugins/?.lua;;
-ENV KONG_CUSTOM_PLUGINS yc-token-auth
+ENV KONG_CUSTOM_PLUGINS custom-token-auth
 
 ADD kong/ /kong-plugins/kong/
 ADD run.sh /
