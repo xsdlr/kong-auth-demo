@@ -12,7 +12,7 @@ TokenAuthHandler.PRIORITY = 1000
 --- Get auth header field from headers
 -- @param request
 -- @return auth_header
-local function extract_auth_field(request)
+local function extract_auth_field(request, conf)
   local auth_header_field = {}
   local auth_key_names = conf.auth_key_names
   local req_headers = request.get_headers()
@@ -62,7 +62,7 @@ end
 function TokenAuthHandler:access(conf)
   TokenAuthHandler.super.access(self)
 
-  local auth_header_field, err = extract_auth_field(ngx.req)
+  local auth_header_field, err = extract_auth_field(ngx.req, conf)
   local is_validate, code, response_headers, response = validate_token(auth_header_field, conf)
   if not is_validate then
     return responses.send(code, response, true, response_headers)
