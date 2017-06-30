@@ -63,7 +63,7 @@ function TokenAuthHandler:access(conf)
   TokenAuthHandler.super.access(self)
 
   local auth_header_field, err = extract_auth_field(ngx.req)
-  local is_validate, code, response_headers, response,  = validate_token(auth_header_field, conf)
+  local is_validate, code, response_headers, response = validate_token(auth_header_field, conf)
   if not is_validate then
     return responses.send(code, response, true, response_headers)
   end
