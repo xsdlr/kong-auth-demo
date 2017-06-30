@@ -64,7 +64,9 @@ function TokenAuthHandler:access(conf)
 
   local auth_header_field, err = extract_auth_field(ngx.req, conf)
   local is_validate, code, response_headers, response = validate_token(auth_header_field, conf)
-  ngx.log(ngx.ERR, "response body2: ", response)
+  ngx.log(ngx.ERR, "response code: ", code)
+  ngx.log(ngx.ERR, "response response: ", response)
+  ngx.log(ngx.ERR, "response response_headers: ", response_headers)
   if not is_validate then
     return responses.send(code, response, true, response_headers)
   end
