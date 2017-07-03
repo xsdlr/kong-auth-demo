@@ -10,8 +10,9 @@ local TokenAuthHandler = BasePlugin:extend()
 TokenAuthHandler.PRIORITY = 1000
 
 --- Get auth header field from headers
--- @param request
--- @return auth_header
+-- @param request       request
+-- @param conf          plugin configuration
+-- @return auth_header  request headers for auth
 local function extract_auth_field(request, conf)
   local auth_header_field = {}
   local auth_key_names = conf.auth_key_names
@@ -71,7 +72,7 @@ function TokenAuthHandler:access(conf)
   if not is_validate then
     local response_status_code = code
     if response_status_code >= 500 then
-      response_status_code = 502
+      response_status_code = 401
     end
     return responses.send(response_status_code, response, response_headers)
   end
