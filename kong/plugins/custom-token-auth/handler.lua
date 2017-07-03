@@ -41,7 +41,7 @@ local function validate_token (headers, conf)
     headers = headers,
     sink = ltn12.sink.table(response_body),
   }
-  if code == 200 then
+  if code == 204 then
     return true
   end
   local resp
@@ -51,8 +51,12 @@ local function validate_token (headers, conf)
     resp = table.concat(response_body)
   end
   ngx.log(ngx.DEBUG, "response body: ", resp)
-
-  return false, code, response_headers, resp
+  local decoded, err = cjson.decode(resp)
+  if err then
+    ngx.log(ngx.ERR, "failed to decode response body: ", err)
+    return false, code, response_headers, {}
+  end
+  return false, code, response_headers, decoded
 end
 
 function TokenAuthHandler:new()
@@ -65,7 +69,11 @@ function TokenAuthHandler:access(conf)
   local auth_header_field, err = extract_auth_field(ngx.req, conf)
   local is_validate, code, response_headers, response = validate_token(auth_header_field, conf)
   if not is_validate then
-    return responses.send(code, response, true, response_headers)
+    local response_status_code = code
+    if response_status_code >= 500 then
+      response_status_code = 502
+    end
+    return responses.send(response_status_code, response, response_headers)
   end
 end
 

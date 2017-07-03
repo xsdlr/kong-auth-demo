@@ -12,3 +12,5 @@ run:
     -p 7946:7946 \
     -p 7946:7946/udp \
     yc-kong
+remove:
+	docker rm -f kong
