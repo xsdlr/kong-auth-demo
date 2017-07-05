@@ -8,7 +8,6 @@ local responses = require "kong.tools.responses"
 local TokenAuthHandler = BasePlugin:extend()
 
 TokenAuthHandler.PRIORITY = 1000
-
 --- Get auth header field from headers
 -- @param request       request
 -- @param conf          plugin configuration
@@ -66,15 +65,17 @@ end
 
 function TokenAuthHandler:access(conf)
   TokenAuthHandler.super.access(self)
-
-  local auth_header_field, err = extract_auth_field(ngx.req, conf)
-  local is_validate, code, response_headers, response = validate_token(auth_header_field, conf)
-  if not is_validate then
-    local response_status_code = code
-    if response_status_code >= 500 then
-      response_status_code = 401
+  local is_options_request = ngx.req.get_method == ngx.HTTP_OPTIONS
+  if not is_options_request then
+    local auth_header_field, err = extract_auth_field(ngx.req, conf)
+    local is_validate, code, response_headers, response = validate_token(auth_header_field, conf)
+    if not is_validate then
+      local response_status_code = code
+      if response_status_code >= 500 then
+        response_status_code = 401
+      end
+      return responses.send(response_status_code, response, response_headers)
     end
-    return responses.send(response_status_code, response, response_headers)
   end
 end
 
