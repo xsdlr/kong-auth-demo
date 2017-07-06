@@ -11,7 +11,7 @@ run:
     -p 8001:8001 \
     -p 7946:7946 \
     -p 7946:7946/udp \
-    -v /root/kong-conf:/conf kong:latest
+    -v /root/kong-conf:/conf \
     yc-kong
 remove:
 	docker rm -f kong
