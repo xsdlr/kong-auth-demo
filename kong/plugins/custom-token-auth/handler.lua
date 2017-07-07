@@ -67,6 +67,8 @@ end
 function TokenAuthHandler:access(conf)
   TokenAuthHandler.super.access(self)
   local is_options_request = ngx.req.get_method == ngx.HTTP_OPTIONS
+  ngx.log(ngx.DEBUG, "request method: ", ngx.req.get_method)
+  ngx.log(ngx.DEBUG, "request is options: ", is_options_request)
   if is_options_request then
     return responses.send_HTTP_OK()
   end
