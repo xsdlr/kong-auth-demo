@@ -53,8 +53,6 @@ local function validate_token (headers, conf)
   ngx.log(ngx.DEBUG, "response code: ", code)
   ngx.log(ngx.DEBUG, "response body: ", resp)
   local decoded, err = cjson.decode(resp)
-  ngx.log(ngx.DEBUG, "decoded: ", decoded)
-  ngx.log(ngx.DEBUG, "decoded err: ", err)
   if err then
     ngx.log(ngx.ERR, "failed to decode response body: ", err)
     return false, code, response_headers, {}
